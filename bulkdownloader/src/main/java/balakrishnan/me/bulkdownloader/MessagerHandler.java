@@ -1,5 +1,7 @@
 package balakrishnan.me.bulkdownloader;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -7,8 +9,13 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -76,6 +83,9 @@ public class MessagerHandler {
                 case 1:
                     if (msg.getData() != null) {
                         if (msg.getData().getBoolean("state", false)) {
+                            ResponseBodySerializable responseBodySerializable = (ResponseBodySerializable) msg.getData().getSerializable("stream");
+                            Log.d(TAG, "handleMessage: " + getStringFromInputStream(responseBodySerializable.getResponseBody()));
+                            Bitmap myBitmap = BitmapFactory.decodeStream(responseBodySerializable.getResponseBody());
                             success++;
                         } else {
                             failure++;
@@ -96,5 +106,35 @@ public class MessagerHandler {
         }
 
     }
+
+    private static String getStringFromInputStream(InputStream is) {
+
+        BufferedReader br = null;
+        StringBuilder sb = new StringBuilder();
+
+        String line;
+        try {
+
+            br = new BufferedReader(new InputStreamReader(is));
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return sb.toString();
+
+    }
+
 
 }
