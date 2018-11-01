@@ -28,8 +28,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class ImageDownloaderWorker extends Worker {
-    private String TAG = getClass().getSimpleName();
     private static Gson gson = new Gson();
+    private String TAG = getClass().getSimpleName();
     private List<String> g;
     private LocalData localData;
     private String fileName;
