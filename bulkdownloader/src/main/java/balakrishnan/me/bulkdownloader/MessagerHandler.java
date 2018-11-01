@@ -9,6 +9,7 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class MessagerHandler {
@@ -61,7 +62,8 @@ public class MessagerHandler {
         int total, success = 0, failure = 0, percentage;
         ImageDownloaderHelper.DownloadStatus downloadStatus;
         private String TAG = "IncomingMessageHandler";
-        private LinkedHashMap<String, ProgressModel> trackRecord = new LinkedHashMap<>();
+        private static LinkedHashMap<String, ProgressModel> trackRecord = new LinkedHashMap<>();
+        private ArrayList<ProgressModel> list = new ArrayList<>();
 
         public IncomingMessageHandler(int total, ImageDownloaderHelper.DownloadStatus status) {
             this.downloadStatus = status;
@@ -84,13 +86,12 @@ public class MessagerHandler {
                     break;
                 case 2:
                     if (msg.getData() != null) {
-
                         trackRecord.put(msg.getData().getString("url"), new ProgressModel(msg.getData().getFloat("fileSize", (float) 0.0), msg.getData().getFloat("currentSize", (float) 0.0)));
                         if (downloadStatus != null) {
+                            Log.d(TAG, "handleMessage: " + trackRecord.size());
                             downloadStatus.CurrentDownloadPercentage(trackRecord);
                         }
                     }
-
             }
         }
 

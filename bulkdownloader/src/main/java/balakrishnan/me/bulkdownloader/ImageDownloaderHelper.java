@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
@@ -25,9 +26,7 @@ import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/**
- * a class created to use the functions related to download the images across entire application
- */
+
 public class ImageDownloaderHelper {
 
     public static WorkManager mWorkManager = WorkManager.getInstance();
@@ -184,11 +183,6 @@ public class ImageDownloaderHelper {
                         .setUrls(new UrlHelper().setSource(strings).setUrlType(UrlHelper.UrlType.IMAGE).getUrl())
                         .setCollectionId(collectionId)
                         .create();
-//                ImageDownloaderHelper.createImageDownloadWork(
-//                new UrlHelper()
-//                        .setSource(strings)
-//                        .setUrlType(UrlHelper.UrlType.IMAGE)
-//                        .getUrl(), downloadStatus, collectionId);
             } catch (Exception e) {
                 e.printStackTrace();
             }

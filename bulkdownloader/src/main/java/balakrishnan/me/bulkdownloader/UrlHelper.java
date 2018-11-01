@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.example.bulkdownloader.ImageDownloader.UrlHelper.UrlType.IMAGE;
-import static com.example.bulkdownloader.ImageDownloader.UrlHelper.UrlType.NONE;
+import static balakrishnan.me.bulkdownloader.UrlHelper.UrlType.IMAGE;
+import static balakrishnan.me.bulkdownloader.UrlHelper.UrlType.NONE;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class UrlHelper {
