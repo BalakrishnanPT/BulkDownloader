@@ -1,9 +1,42 @@
 package balakrishnan.me.bulkdownloader;
 
-public class ProgressModel {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class ProgressModel implements Parcelable {
     float fileSize = (float) 0.0;
     float downloadedSize = (float) 0.0;
     int progress = 0;
+
+    protected ProgressModel(Parcel in) {
+        fileSize = in.readFloat();
+        downloadedSize = in.readFloat();
+        progress = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(fileSize);
+        dest.writeFloat(downloadedSize);
+        dest.writeInt(progress);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ProgressModel> CREATOR = new Creator<ProgressModel>() {
+        @Override
+        public ProgressModel createFromParcel(Parcel in) {
+            return new ProgressModel(in);
+        }
+
+        @Override
+        public ProgressModel[] newArray(int size) {
+            return new ProgressModel[size];
+        }
+    };
 
     public void setProgress(int progress) {
         this.progress = progress;

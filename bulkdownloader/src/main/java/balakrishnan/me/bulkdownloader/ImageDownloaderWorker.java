@@ -1,9 +1,7 @@
 package balakrishnan.me.bulkdownloader;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
@@ -82,15 +80,7 @@ public class ImageDownloaderWorker extends Worker {
                     Bundle bundle = new Bundle();
                     bundle.putBoolean("state", true);
 
-                    LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
-
-                    IntentFilter filter = new IntentFilter(BulkDownloaderIntentServices.CUSTOM_ACTION);
-
-                    BroadcastReceiver mReceiver = new Receiver();
-
-                    LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mReceiver, filter);
-
-                    Intent intent = new Intent(getApplicationContext(), BulkDownloaderIntentServices.class);
+                    Intent intent = new Intent(BaseApplication.BULK_DOWNLOADER_NOTIFICATION);
 
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 //                    Buffer of response inputStream length
@@ -111,9 +101,7 @@ public class ImageDownloaderWorker extends Worker {
 
                     intent.putExtra("url", response.request().url().toString());
 
-                    getApplicationContext().startService(intent);
-
-                    localBroadcastManager.unregisterReceiver(mReceiver);
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
 
                     MessagerHandler.sendMessage(1, "status", bundle);
                     removeFromList(call.request().url().toString());

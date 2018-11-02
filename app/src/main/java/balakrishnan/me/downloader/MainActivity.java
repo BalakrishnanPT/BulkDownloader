@@ -1,10 +1,13 @@
 package balakrishnan.me.downloader;
 
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 
 import java.util.LinkedHashMap;
 
+import balakrishnan.me.bulkdownloader.BaseApplication;
 import balakrishnan.me.bulkdownloader.ImageDownloaderException;
 import balakrishnan.me.bulkdownloader.ImageDownloaderHelper;
 import balakrishnan.me.bulkdownloader.ProgressModel;
@@ -17,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         try {
             new ImageDownloaderHelper().setDownloadStatus(getCallback())
                     .setUrl("https://5bc9d0eb57adaa001375b1c6.mockapi.io/sampleget")

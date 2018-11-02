@@ -54,14 +54,6 @@ public class MessagerHandler {
 
     }
 
-    Handler handler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-
-            return false;
-        }
-    });
-
     /**
      * This handler is used for getting Success / Failure message from Work Manager Downloading image
      */
