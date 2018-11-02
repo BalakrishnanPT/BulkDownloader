@@ -17,7 +17,7 @@ ext {
     libraryDescription = 'This library can downloded 1000 of image in foreground and in background'
     siteUrl = 'https://github.com/BK24/SimplifiedDownloader'
     gitUrl = 'https://github.com/BK24/SimplifiedDownloader.git'
-    libraryVersion = '0.0.4'
+    libraryVersion = '0.0.5'
     developerId = 'bk24'
     developerName = 'Bala'
     developerEmail = 'balakrishnan.750@gmail.com'
