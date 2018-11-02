@@ -54,6 +54,7 @@ public class ImageDownloaderWorker extends Worker {
         fileName = value[0];
         localData = new LocalData(getApplicationContext());
         g = toList(localData.getStringPreferenceValue(value[0]));
+        final DownloadStatusModel downloadStatusModel = new DownloadStatusModel(BulkDownloaderConstant.DownloadStatusFileName(Integer.parseInt(value[1])));
         final CountDownLatch startSignal = new CountDownLatch(g.size());
         for (String s : g) {
             Log.d(TAG, "run: " + android.util.Patterns.WEB_URL.matcher(s).matches());
@@ -68,8 +69,10 @@ public class ImageDownloaderWorker extends Worker {
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
+                    downloadStatusModel.increaseFailure();
                     Bundle bundle = new Bundle();
                     bundle.putBoolean("state", false);
+                    bundle.putParcelable("downloadStatusModel", downloadStatusModel);
                     MessagerHandler.sendMessage(1, "status", bundle);
                     result[0] = Result.FAILURE;
                     e.printStackTrace();
@@ -80,7 +83,6 @@ public class ImageDownloaderWorker extends Worker {
                     Bundle bundle = new Bundle();
                     bundle.putBoolean("state", true);
 
-                    Intent intent = new Intent(BaseApplication.BULK_DOWNLOADER_NOTIFICATION);
 
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 //                    Buffer of response inputStream length
@@ -95,13 +97,13 @@ public class ImageDownloaderWorker extends Worker {
                     outputStream.flush();
                     InputStream is1 = new ByteArrayInputStream(outputStream.toByteArray());
 
+                    downloadStatusModel.increaseSuccess();
                     bundle.putSerializable("stream", new ResponseBodySerializable(is1));
+                    bundle.putParcelable("downloadStatusModel", downloadStatusModel);
 //                    Closes the stream permanently to ensure that
                     outputStream.close();
 
-                    intent.putExtra("url", response.request().url().toString());
-
-                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                    Log.d(TAG, "onResponse: " + downloadStatusModel.toString());
 
                     MessagerHandler.sendMessage(1, "status", bundle);
                     removeFromList(call.request().url().toString());
@@ -109,9 +111,11 @@ public class ImageDownloaderWorker extends Worker {
                     startSignal.countDown();
                 }
             });
+//            To clear SharedPreference
         }
         try {
             startSignal.await();
+            downloadStatusModel.resetState();
             if (toList(localData.getStringPreferenceValue(fileName)).size() == 0)
                 ImageDownloaderHelper.removeFromWork(Integer.parseInt(value[1]));
             return Result.SUCCESS;

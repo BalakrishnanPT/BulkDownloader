@@ -9,7 +9,6 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
@@ -92,7 +91,9 @@ public class ImageDownloaderHelper {
 //         Convert the list into string and store in SharedPreference
         dbLocalData.setStringPreferenceValue("value_" + collectionId, gsonToString(urls));
 //        Store size of collection in SharedPreference
-        dbLocalData.setIntegerPreferenceValue("size_value_" + collectionId, urls.size());
+        dbLocalData.setIntegerPreferenceValue(BulkDownloaderConstant.DownloadStatusFileName(collectionId), urls.size());
+        DownloadStatusModel downloadStatusModel = new DownloadStatusModel(BulkDownloaderConstant.DownloadStatusFileName(collectionId));
+        downloadStatusModel.setTotal(urls.size());
 //        Set input data -> Key for stored list :: value_ + collectionId
         listDownloadBuilder.setInputData(new Data.Builder().putStringArray("value", new String[]{"value_" + collectionId, collectionId + ""}).build());
         OneTimeWorkRequest work = listDownloadBuilder.build();
