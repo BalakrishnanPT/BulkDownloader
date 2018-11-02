@@ -5,6 +5,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:name=".SubApplication"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -16,6 +17,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".Receiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter >
+                <action android:name="bulk_downloader.notification"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

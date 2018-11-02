@@ -1,14 +1,19 @@
 package balakrishnan.me.bulkdownloader;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -21,8 +26,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class ImageDownloaderWorker extends Worker {
-    private String TAG = getClass().getSimpleName();
     private static Gson gson = new Gson();
+    private String TAG = getClass().getSimpleName();
     private List<String> g;
     private LocalData localData;
     private String fileName;
@@ -49,6 +54,7 @@ public class ImageDownloaderWorker extends Worker {
         fileName = value[0];
         localData = new LocalData(getApplicationContext());
         g = toList(localData.getStringPreferenceValue(value[0]));
+        final DownloadStatusModel downloadStatusModel = new DownloadStatusModel(BulkDownloaderConstant.DownloadStatusFileName(Integer.parseInt(value[1])));
         final CountDownLatch startSignal = new CountDownLatch(g.size());
         for (String s : g) {
             Log.d(TAG, "run: " + android.util.Patterns.WEB_URL.matcher(s).matches());
@@ -63,8 +69,10 @@ public class ImageDownloaderWorker extends Worker {
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
+                    downloadStatusModel.increaseFailure();
                     Bundle bundle = new Bundle();
                     bundle.putBoolean("state", false);
+                    bundle.putParcelable("downloadStatusModel", downloadStatusModel);
                     MessagerHandler.sendMessage(1, "status", bundle);
                     result[0] = Result.FAILURE;
                     e.printStackTrace();
@@ -72,16 +80,42 @@ public class ImageDownloaderWorker extends Worker {
 
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    response.body().string();
-                    response.body().close();
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("state", true);
+
+
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//                    Buffer of response inputStream length
+                    byte[] buffer = new byte[(int) response.body().contentLength()];
+
+                    int len;
+//                    Read response inputStream aka byteStream and write it to buffer
+                    while ((len = response.body().byteStream().read(buffer)) > -1) {
+                        outputStream.write(buffer, 0, len);
+                    }
+//                   Frees space for future write operation
+                    outputStream.flush();
+                    InputStream is1 = new ByteArrayInputStream(outputStream.toByteArray());
+
+                    downloadStatusModel.increaseSuccess();
+                    bundle.putSerializable("stream", new ResponseBodySerializable(is1));
+                    bundle.putParcelable("downloadStatusModel", downloadStatusModel);
+//                    Closes the stream permanently to ensure that
+                    outputStream.close();
+
+                    Log.d(TAG, "onResponse: " + downloadStatusModel.toString());
+
+                    MessagerHandler.sendMessage(1, "status", bundle);
                     removeFromList(call.request().url().toString());
                     result[0] = Result.SUCCESS;
                     startSignal.countDown();
                 }
             });
+//            To clear SharedPreference
         }
         try {
             startSignal.await();
+            downloadStatusModel.resetState();
             if (toList(localData.getStringPreferenceValue(fileName)).size() == 0)
                 ImageDownloaderHelper.removeFromWork(Integer.parseInt(value[1]));
             return Result.SUCCESS;
@@ -91,7 +125,6 @@ public class ImageDownloaderWorker extends Worker {
             return Result.RETRY;
         }
     }
-
 
     List<String> toList(String g) {
         Gson gson = new Gson();
