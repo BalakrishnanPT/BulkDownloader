@@ -10,6 +10,6 @@ public class Receiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "onReceive: " + intent.getStringExtra("url"));
+        Log.d(TAG, "onReceive: " + intent.getParcelableExtra("downloadStatusModel").toString());
     }
 }

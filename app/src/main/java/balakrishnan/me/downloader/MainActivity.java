@@ -1,13 +1,11 @@
 package balakrishnan.me.downloader;
 
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import java.util.LinkedHashMap;
 
-import balakrishnan.me.bulkdownloader.BaseApplication;
 import balakrishnan.me.bulkdownloader.ImageDownloaderException;
 import balakrishnan.me.bulkdownloader.ImageDownloaderHelper;
 import balakrishnan.me.bulkdownloader.ProgressModel;
@@ -36,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void DownloadedItems(int totalurls, int downloadPercentage, int successPercent, int failurePercent) {
 //               You can get Total Image Downloaded progress here
+                Log.d(TAG, "DownloadedItems: " + downloadPercentage);
             }
 
             @Override

@@ -2,21 +2,20 @@ package balakrishnan.me.bulkdownloader;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
+import android.support.annotation.RestrictTo;
 
 /**
  * A Class created to use the shared preference related functions
  * Created by Jaison.
  */
 
-public class LocalData
-{
+@RestrictTo(RestrictTo.Scope.LIBRARY)
+public class LocalData {
     private SharedPreferences appSharedPrefs;
     private SharedPreferences.Editor prefsEditor;
 
-    public LocalData(Context context)
-    {
-        this.appSharedPrefs = context.getSharedPreferences("ImageDownloader", Context.MODE_PRIVATE);
+    public LocalData(Context context) {
+        this.appSharedPrefs = context.getSharedPreferences("bulkdownloader", Context.MODE_PRIVATE);
         this.prefsEditor = appSharedPrefs.edit();
     }
 
@@ -43,7 +42,8 @@ public class LocalData
 
     /**
      * A method to store the string value in the shared preference
-     * @param keyName a keyName of the preference value
+     *
+     * @param keyName  a keyName of the preference value
      * @param setValue a value of the preference value
      */
     public void setStringPreferenceValue(String keyName, String setValue) {
@@ -55,6 +55,7 @@ public class LocalData
 
     /**
      * A method to get the int value from the shared preference
+     *
      * @param keyName a keyName of the preference value
      * @return it returns the int value of the keyName
      */
@@ -64,7 +65,8 @@ public class LocalData
 
     /**
      * A method to store the int value in the shared preference
-     * @param keyName a keyName of the preference value
+     *
+     * @param keyName  a keyName of the preference value
      * @param setValue a value of the preference value
      */
     public void setIntegerPreferenceValue(String keyName, int setValue) {
@@ -76,6 +78,7 @@ public class LocalData
 
     /**
      * A method to get the boolean value from the shared preference
+     *
      * @param keyName a keyName of the preference value
      * @return it returns the boolean value of the keyName
      */
@@ -85,7 +88,8 @@ public class LocalData
 
     /**
      * A method to store the boolean value in the shared preference
-     * @param keyName a keyName of the preference value
+     *
+     * @param keyName  a keyName of the preference value
      * @param setValue a value of the preference value
      */
     public void setBooleanPreferenceValue(String keyName, boolean setValue) {
