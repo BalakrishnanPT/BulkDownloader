@@ -1,14 +1,19 @@
 package balakrishnan.me.bulkdownloader;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -21,8 +26,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class ImageDownloaderWorker extends Worker {
-    private String TAG = getClass().getSimpleName();
     private static Gson gson = new Gson();
+    private String TAG = getClass().getSimpleName();
     private List<String> g;
     private LocalData localData;
     private String fileName;
@@ -72,8 +77,33 @@ public class ImageDownloaderWorker extends Worker {
 
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    response.body().string();
-                    response.body().close();
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("state", true);
+
+                    Intent intent = new Intent(BaseApplication.BULK_DOWNLOADER_NOTIFICATION);
+
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//                    Buffer of response inputStream length
+                    byte[] buffer = new byte[(int) response.body().contentLength()];
+
+                    int len;
+//                    Read response inputStream aka byteStream and write it to buffer
+                    while ((len = response.body().byteStream().read(buffer)) > -1) {
+                        outputStream.write(buffer, 0, len);
+                    }
+//                   Frees space for future write operation
+                    outputStream.flush();
+                    InputStream is1 = new ByteArrayInputStream(outputStream.toByteArray());
+
+                    bundle.putSerializable("stream", new ResponseBodySerializable(is1));
+//                    Closes the stream permanently to ensure that
+                    outputStream.close();
+
+                    intent.putExtra("url", response.request().url().toString());
+
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+
+                    MessagerHandler.sendMessage(1, "status", bundle);
                     removeFromList(call.request().url().toString());
                     result[0] = Result.SUCCESS;
                     startSignal.countDown();
@@ -91,7 +121,6 @@ public class ImageDownloaderWorker extends Worker {
             return Result.RETRY;
         }
     }
-
 
     List<String> toList(String g) {
         Gson gson = new Gson();

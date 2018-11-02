@@ -2,6 +2,7 @@ package balakrishnan.me.bulkdownloader;
 
 
 import android.os.Bundle;
+import android.support.annotation.RestrictTo;
 
 import java.io.IOException;
 
@@ -35,22 +36,19 @@ public class CustomDownloadClient {
                         .addNetworkInterceptor(new Interceptor() {
                             @Override
                             public Response intercept(Chain chain) throws IOException {
-                                Response originalResponse = chain.proceed(chain.request());
+                                final Response originalResponse = chain.proceed(chain.request());
                                 return originalResponse.newBuilder()
                                         .body(new ProgressResponseBody(originalResponse.body(), new ProgressListener() {
                                             @Override
                                             public void update(long bytesRead, long contentLength, boolean done, String url) {
                                                 if (done) {
-                                                    Bundle bundle = new Bundle();
-                                                    bundle.putBoolean("state", true);
-                                                    MessagerHandler.sendMessage(1, "status", bundle);
                                                 } else {
                                                     Bundle bundle = new Bundle();
                                                     bundle.putInt("progress", (int) ((100 * bytesRead) / contentLength));
-                                                    bundle.putFloat("fileSize",contentLength);
-                                                    bundle.putFloat("currentSize",bytesRead);
-                                                    bundle.putString("url",url);
-                                                    MessagerHandler.sendMessage(2, "induvidualProgress" ,bundle);
+                                                    bundle.putFloat("fileSize", contentLength);
+                                                    bundle.putFloat("currentSize", bytesRead);
+                                                    bundle.putString("url", url);
+                                                    MessagerHandler.sendMessage(2, "induvidualProgress", bundle);
                                                 }
                                             }
                                         }, originalResponse.request().url().toString()))

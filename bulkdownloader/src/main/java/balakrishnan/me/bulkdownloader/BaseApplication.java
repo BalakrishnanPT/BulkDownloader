@@ -2,9 +2,11 @@ package balakrishnan.me.bulkdownloader;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 public class BaseApplication extends Application {
     private static Context context;
+    public static String BULK_DOWNLOADER_NOTIFICATION = "bulk_downloader.notification";
 
     @Override
     public void onCreate() {
