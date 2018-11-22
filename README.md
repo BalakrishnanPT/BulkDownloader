@@ -69,14 +69,11 @@ Example:
 
 You need to add following code in your activity / Fragment
 ```]ava
- try {
+
             new ImageDownloaderHelper().setDownloadStatus(getCallback())
                     .setUrl(`some_url`)
                     .setCollectionId(uniqueId)
                     .createImageDownloadWorkURl();
-        } catch (ImageDownloaderException e) {
-            e.printStackTrace();
-        }
 ```
 getCallback() method is as follows
 ```java

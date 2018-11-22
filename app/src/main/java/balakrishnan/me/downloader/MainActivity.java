@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import balakrishnan.me.bulkdownloader.ImageDownloaderException;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
                     .setUrl("https://5bc9d0eb57adaa001375b1c6.mockapi.io/sampleget")
                     .setCollectionId(1)
                     .createImageDownloadWorkURl();
+
         } catch (ImageDownloaderException e) {
             e.printStackTrace();
         }
