@@ -95,7 +95,7 @@ getCallback() method is as follows
 Receiving download status if app is not running
 
 1. Create a receiver for receiving info even if app is not running
-[Reciver](https://github.com/BK24/BulkDownloader/blob/master/app/src/main/java/balakrishnan/me/downloader/Receiver.java)
+[Receiver](https://github.com/BK24/BulkDownloader/blob/master/app/src/main/java/balakrishnan/me/downloader/Receiver.java)
 2. Register the receiver in [AndroidManifest.xml](https://github.com/BK24/BulkDownloader/blob/master/app/src/main/AndroidManifest.xml) and [Application Class](https://github.com/BK24/BulkDownloader/blob/master/app/src/main/java/balakrishnan/me/downloader/SubApplication.java)
 
 You will get information in the receiver of download only if app is not running
