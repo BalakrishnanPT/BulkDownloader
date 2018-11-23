@@ -5,14 +5,15 @@ You want to download 100's of images in background
 You want progress of each file being downloaded and total images downloaded.
 
 ### What this can do:
-You can download bunch of images in a go
-You can assign n number of downloading tasks and this library can handle this pretty well
-You can assign 10 downloading jobs that has 100s of images each, each downloading batch gives you progress and as well as each image progress in percentage
-Let's say you have to download unknown number of images from a response,you don't have to parse the response to get image urls you can just pass the response and this will handle everything for you.
-You can specify when to download the images lets say you have to download only when internet is at good speed or download over mobile data or not to download when app is in doze mode.
+- You can download bunch of images in a go
+ -You can assign n number of downloading tasks and this library can handle this pretty well
+- You can assign 10 downloading jobs that has 100s of images each, each downloading batch gives you progress and as well as each image progress in percentage
+- Let's say you have to download unknown number of images from a response,you don't have to parse the response to get image urls you can just pass the response and this will handle everything for you.
+- You can specify when to download the images lets say you have to download only when internet is at good speed or download over mobile data or not to download when app is in doze mode.
+- You can get the information of downloading in receiver if app is not running. You can write logic in receiver for local notification
 ### In development
-As of now this library can support only images but it is developed in such way that it could support uploads and all formats.
-To specify what to do when each file is downloaded. Let say you have to convert a response into video or image and resizing it.
+- As of now this library can support only images but it is developed in such way that it could support uploads and all formats.
+- To specify what to do when each file is downloaded. Let say you have to convert a response into video or image and resizing it.
 ### Implementation
 Copy and paste this dependency in module gradle
 
